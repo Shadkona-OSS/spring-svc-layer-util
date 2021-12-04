@@ -1,4 +1,4 @@
-package oss.shadkona.ci;
+package com.shadkona.ci;
 
 import static org.junit.Assert.assertTrue;
 

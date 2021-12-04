@@ -1,4 +1,4 @@
-package oss.shadkona.ci;
+package com.shadkona.ci;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
