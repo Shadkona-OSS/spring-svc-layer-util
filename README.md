@@ -4,6 +4,27 @@ To identify the list of J2EE Spring Service Layer methods not having Pre-Authori
 # Sonatype JIRA ID
 https://issues.sonatype.org/browse/OSSRH-75706
 
+```
+Subject : Need a Maven Plugin to find out the number of Methods in the J2EE Spring Service Layer not having Security Annotations in the source code
+```
+
+```
+Description : Need a Maven Plugin to find out the number of Methods in the J2EE Spring Service Layer not having Security Annotations
+Need a Maven Plugin to find out the number of Methods in the J2EE Spring Service Layer not having Security Annotations.
+If any method in the Spring Service Layer not having Security Annotation then it will be a vulnerable one and lead to security loop wholes.
+Is it better find out such methods and inform the developer as part of the CI 
+This small plugin will enable to find out the number of Methods in the J2EE Spring Service Layer not having Security Annotations.
+```
+
+```
+Group Id : com.shadkona.ci
+Project URL : 
+```
+
+```
+To register this Group Id you must prove ownership of the domain shadkona.com adding a TXT record to your DNS with the text: OSSRH-<JIRAID>
+```
+
 # How to Publish Your Artifacts to Maven Central
 If you're wondering how to publish your artifacts to Maven central, then this step-by-step guide is for you. Heads up: you'll need to have Github.
 
