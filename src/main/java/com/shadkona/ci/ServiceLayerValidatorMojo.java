@@ -20,7 +20,7 @@ import org.reflections.Reflections;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
- * Checks thte number of methods not having Security Annotations
+ * Checks the number of methods not having Security Annotations
  * 
  * Ignore the list of classes given
  *
