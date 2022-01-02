@@ -358,14 +358,11 @@ This step is the easiest one.
 There are basically two versions of your artifacts - a staged version and a release version.
 To deploy to the staged version use the below Maven goal.
 
-```
-mvn nexus-staging:release
-```
 
-To rollback the current staging release
+To prepare the release
 
 ```
-mvn nexus-staging:drop
+mvn release:prepare
 ```
 
 To release the current state of the code
