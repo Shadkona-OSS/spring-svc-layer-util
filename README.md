@@ -384,6 +384,13 @@ You should see the foloowing out out for the above command
 [INFO] ------------------------------------------------------------------------
 ```
 
+To release the current state of the code
+
+```
+mvn clean
+```
+
+
 That's It! This ends the process.
 
 If everything goes well, your artifact should be listed in a matter of an hour in the Sonatype repository - https://search.maven.org/. It might take up-to 4-8 hours to reflect in other maven repositories.
