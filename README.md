@@ -387,7 +387,7 @@ You should see the foloowing out out for the above command
 To release the current state of the code
 
 ```
-mvn clean
+mvn release:clean
 ```
 
 
