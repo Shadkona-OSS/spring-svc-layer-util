@@ -1,32 +1,8 @@
-# spring-svc-layer-util
+
+# Project name :: spring-svc-layer-util
 To identify the list of J2EE Spring Service Layer methods not having Pre-Authorise Annotation. This can be used in the CI Pipeline for better quality and security.
 
-# Sonatype JIRA ID
-https://issues.sonatype.org/browse/OSSRH-75706
-
-```
-Subject : Need a Maven Plugin to find out the number of Methods in the J2EE Spring Service Layer not having Security Annotations in the source code
-```
-
-```
-Description : Need a Maven Plugin to find out the number of Methods in the J2EE Spring Service Layer not having Security Annotations
-Need a Maven Plugin to find out the number of Methods in the J2EE Spring Service Layer not having Security Annotations.
-If any method in the Spring Service Layer not having Security Annotation then it will be a vulnerable one and lead to security loop wholes.
-Is it better find out such methods and inform the developer as part of the CI 
-This small plugin will enable to find out the number of Methods in the J2EE Spring Service Layer not having Security Annotations.
-```
-
-```
-Group Id : com.shadkona.ci
-Project URL : 
-```
-
-```
-To register this Group Id you must prove ownership of the domain shadkona.com adding a TXT record to your DNS with the text: OSSRH-<JIRAID>
-```
-
-# How to Publish Your Artifacts to Maven Central
-If you're wondering how to publish your artifacts to Maven central, then this step-by-step guide is for you. Heads up: you'll need to have Github.
+On a high level there are 5 key steps involved in getting your open source code published. Assuming you already have your JAVA and Maven based code setup on Github.
 
 ## Prerequisite Steps
 * Step 0: Maven settings [help](https://www.baeldung.com/maven-settings-xml)
@@ -66,157 +42,169 @@ C:\Users\Nadeem>
 ```
 * Step 9: Generate the key pair.
 
+## Step to deploy the artifact on the Maven Central
+1. Request for hosting your code on Sonatype.
+1. Generating and publishing PGP keys.
+1. Setting up Maven Configuration.
+1. Setting up POM xml for the project.
+1. Deploying the artifact.
+
+## Request for hosting code on Sonatype
+You will need to raise a ticket on Sonatype JIRA for new Project hosting. You will first need to sign up [here](https://issues.sonatype.org/secure/Signup!default.jspa)
+
+Please create a JIRA ID with the following Details
+https://issues.sonatype.org/browse/OSSRH-75706
+
 ```
-C:\Users\Nadeem>gpg --full-gen-key
-gpg (GnuPG) 2.1.15; Copyright (C) 2016 Free Software Foundation, Inc.
+Subject : Need a Maven Plugin to find out the number of Methods in the J2EE Spring Service Layer not having Security Annotations in the source code
+Description : Need a Maven Plugin to find out the number of Methods in the J2EE Spring Service Layer not having Security Annotations
+Need a Maven Plugin to find out the number of Methods in the J2EE Spring Service Layer not having Security Annotations.
+If any method in the Spring Service Layer not having Security Annotation then it will be a vulnerable one and lead to security loop wholes.
+Is it better find out such methods and inform the developer as part of the CI 
+This small plugin will enable to find out the number of Methods in the J2EE Spring Service Layer not having Security Annotations.
+Group Id : com.shadkona.oss.ci
+SCM URL : https://github.com/Shadkona-OSS/spring-svc-layer-util.git
+Project URL : https://github.com/Shadkona-OSS/spring-svc-layer-util.git
+```
+
+Created JIRA ID https://issues.sonatype.org/browse/OSSRH-76835
+[LINK](https://issues.sonatype.org/browse/OSSRH-76835)
+
+```
+To register this Group Id you must prove ownership of the domain shadkona.com adding a TXT record to your DNS with the text: OSSRH-<JIRAID>
+in case create a TXT record with value OSSRH-76835
+```
+
+## Generating and Publishing PGP keys
+
+PGP(Pretty Good Privacy) keys are used to verify authenticity of a digital artifact(in this case your packaged code) using digitally encrypted signatures. We will use this to digitally sign our code as we upload to Sonatype repositories.
+
+Make sure you have the gpg CLI available on your machine. Once you have it installed. You can use the command gpg --full-gen-key command to generate the key. As a part of the options presented in the terminal.
+
+1. Use RSA for the kind of key
+1. Use the default key size
+1. Use the option where the key never expires
+1. Then confirm your choices by typing Y and hitting ENTER.
+1. Enter Phassphrase in this case it is 'Shadkona-OSS'
+
+```
+pcv@HYDMAC025 spring-svc-layer-util % gpg --full-gen-ke
+gpg (GnuPG/MacGPG2) 2.2.32; Copyright (C) 2021 Free Software Foundation, Inc.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
 
-gpg: keybox 'C:/Users/Nadeem/AppData/Roaming/gnupg/pubring.kbx' created
 Please select what kind of key you want:
    (1) RSA and RSA (default)
    (2) DSA and Elgamal
    (3) DSA (sign only)
    (4) RSA (sign only)
+  (14) Existing key from card
 Your selection? 1
 RSA keys may be between 1024 and 4096 bits long.
-What keysize do you want? (2048)
-Requested keysize is 2048 bits
+What keysize do you want? (3072) 
+Requested keysize is 3072 bits
 Please specify how long the key should be valid.
          0 = key does not expire
       <n>  = key expires in n days
       <n>w = key expires in n weeks
       <n>m = key expires in n months
       <n>y = key expires in n years
-Key is valid for? (0)
+Key is valid for? (0) 
 Key does not expire at all
 Is this correct? (y/N) y
 
 GnuPG needs to construct a user ID to identify your key.
 
-Real name: Nadeem Mohammad
-Email address: coolmind182006@gmail.com
-Comment:
+Real name: Shadkona-OSS
+Email address: corporate@shadkona.com
+Comment: Shadkona-OSS
 You selected this USER-ID:
-    "Nadeem Mohammad <coolmind182006@gmail.com>"
+    "Shadkona-OSS (Shadkona-OSS) <corporate@shadkona.com>"
 
-Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? o
+Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? O
 We need to generate a lot of random bytes. It is a good idea to perform
 some other action (type on the keyboard, move the mouse, utilize the
 disks) during the prime generation; this gives the random number
 generator a better chance to gain enough entropy.
-
 We need to generate a lot of random bytes. It is a good idea to perform
 some other action (type on the keyboard, move the mouse, utilize the
 disks) during the prime generation; this gives the random number
 generator a better chance to gain enough entropy.
-gpg: C:/Users/Nadeem/AppData/Roaming/gnupg/trustdb.gpg: trustdb created
-gpg: key 27835B3BD2A2061F marked as ultimately trusted
-gpg: directory 'C:/Users/Nadeem/AppData/Roaming/gnupg/openpgp-revocs.d' created
-gpg: revocation certificate stored as 'C:/Users/Nadeem/AppData/Roaming/gnupg/openpgp-revocs.d\5694AA563793429557F1727835B3BD2A223A.rev'
+gpg: key 559FE948461241F8 marked as ultimately trusted
+gpg: revocation certificate stored as '/Users/pcv/.gnupg/openpgp-revocs.d/839C4A82B068E031570C5452559FE948461241F8.rev'
 public and secret key created and signed.
 
-pub   rsa2048 2016-08-29 [SC]
-      5694AA563793429557F1727835B3BD2A223A
-uid                      Nadeem Mohammad <coolmind182006@gmail.com>
-sub   rsa2048 2016-08-29 [E]
+pub   rsa3072 2022-01-02 [SC]
+      839C4A82B068E031570C5452559FE948461241F8
+uid                      Shadkona-OSS (Shadkona-OSS) <corporate@shadkona.com>
+sub   rsa3072 2022-01-02 [E]
 
-
-C:\Users\Nadeem>
+pcv@HYDMAC025 spring-svc-layer-util % 
 ```
 
-* Step 10: Enter a passphrase.
-Enter passphrase for the keypair
+You will then need to create a file gpg.conf to add an entry for the default key server. This will make sure that the generated key is uploaded to one of the public key servers.
 
-## Publishing Steps
+Below is the entry you will need to make for the gpg.conf at the gpg installation path(~/.gnupg/gpg.conf)
+
+```
+keyserver keys.openpgp.org
+```
+
+I used keys.openpgp.org as the key server, you can use any other public key server as you wish. Below are some options.
+
++ pgp.mit.edu
++ subkeys.pgp.net
++ pgp.surfnet.nl
++ pgp.uni-mainz.de
++ pgp.rediris.es
++ keyserver.linux.it
+
+Now you need to publish your key to the key server. Use the command below with the key ID that was generated for the key earlier.
+
+```
+pcv@HYDMAC025 spring-svc-layer-util % gpg --send-key 839C4A82B068E031570C5452559FE948461241F8
+gpg: sending key 559FE948461241F8 to hkp://keys.openpgp.org
+pcv@HYDMAC025 spring-svc-layer-util % 
+```
+
+Now, that you have uploaded the key to the key server. Ideally, you should receive an email of the upload confirmation from the public key server.
+
+An email with the following subject received
+
+```
+Verify corporate@shadkona.com for your key on keys.openpgp.org
+```
+
+This email contain a link to Verify the email, please follow the verification procedure. The Final verification messge should be like the following
+
+```
+keys.openpgp.org
+You uploaded the key 839C4A82B068E031570C5452559FE948461241F8.
+
+This key is now published with only non-identity information. (What does this mean?)
+
+To make the key available for search by email address, you can verify it belongs to you:
+
+Verification Pending
+corporate@shadkona.com
+
+Note: Some providers delay emails for up to 15 minutes to prevent spam. Please be patient.
+```
+
+The gpg tool has more useful commands. Adding a link for the command reference [here](https://gock.net/blog/2020/gpg-cheat-sheet)
+
+## Setting up Maven Configuration
 ### Step 1: Add a distributed management section to your POM.
 
-Add the deploy plugin.
+Now, let's focus on setting up Maven config for us to use Maven plugins to build, sign and release artifacts to Sonatype repository.
+
+Please add the below profile and server specs in the settings.xml in the Maven PATH - ~/.m2/settings.xml 
 
 ```
-<plugin>
-<artifactId>maven-deploy-plugin</artifactId>
-<version>2.8.2</version>
-<executions>
-<execution>
-<id>default-deploy</id>
-<phase>deploy</phase>
-<goals>
-<goal>deploy</goal>
-</goals>
-</execution>
-</executions>
-</plugin>
-```
-Here is where you can add the distribution management section to your POM:
-
-```
-<distributionManagement>
-<snapshotRepository>
-<id>ossrh</id>
-<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-</snapshotRepository>
-<repository>
-<id>ossrh</id>
-<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/
-</url>
-</repository>
-</distributionManagement>
-```
-### Step 2: Add the ossrh server detail into your settings.xml under M2_REPO home.
-
-```
-<settings>
-<servers>
-<server>
-<id>ossrh</id>
-<username>your-jira-id</username>
-<password>your-jira-pwd</password>
-</server>
-</servers>
-</settings>
-```
-
-Note: the ID element of your servers/server in settings.xml should be identical to the ID element of snapshotRepository and the repository in your POM file.
-
-
-### Step 3: Add the SCM section to your POM.
-
-```
-<scm>
-<connection>scm:git:git://github.com/dexecutor/dependent-tasks-executor.git</connection>
-<developerConnection>scm:git:git@github.com:dexecutor/dexecutor.git</developerConnection>
-<url>https://github.com/dexecutor/dependent-tasks-executor</url>
-<tag>HEAD</tag>
-</scm>
-```
-
-### Step 4: Add the Maven release plugin.
-
-```
-<plugin>
-<groupId>org.apache.maven.plugins</groupId>
-<artifactId>maven-release-plugin</artifactId>
-<version>2.5.3</version>
-<configuration>
-<localCheckout>true</localCheckout>
-<pushChanges>false</pushChanges>
-<mavenExecutorId>forked-path</mavenExecutorId>
-<arguments>-Dgpg.passphrase=${gpg.passphrase}</arguments>
-</configuration>
-<dependencies>
-<dependency>
-<groupId>org.apache.maven.scm</groupId>
-<artifactId>maven-scm-provider-gitexe</artifactId>
-<version>1.9.5</version>
-</dependency>
-</dependencies>
-</plugin>
-```
-Add a GPG passphrase as with your profile in Maven settings.xml.
-
-```
-<settings>
+<settings xmlns="https://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://maven.apache.org/SETTINGS/1.0.0
+                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
 <profiles>
 <profile>
 <id>ossrh</id>
@@ -224,128 +212,176 @@ Add a GPG passphrase as with your profile in Maven settings.xml.
 <activeByDefault>true</activeByDefault>
 </activation>
 <properties>
-<gpg.passphrase>[your_gpg_passphrase]</gpg.passphrase>
+<gpg.keyname>839C4A82B068E031570C5452559FE948461241F8</gpg.keyname>
+<gpg.passphrase>Shadkona-OSS</gpg.passphrase>
 </properties>
 </profile>
 </profiles>
+
+<servers>
+  <server>
+    <id>ossrh</id>
+    <username>devops-shadkona</username>
+    <password>1_Qossrepo4plugin</password>
+   </server>
+  </servers>
 </settings>
-```
-Add the Nexus staging Maven plugin.
 
 ```
-<plugin>
-<groupId>org.sonatype.plugins</groupId>
-<artifactId>nexus-staging-maven-plugin</artifactId>
-<version>1.6.7</version>
-<extensions>true</extensions>
-<configuration>
-<serverId>ossrh</serverId>
-<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-<autoReleaseAfterClose>true</autoReleaseAfterClose>
-</configuration>
-</plugin>
-```
-### Step 5: Add the source and the javadoc plugin.
+
+### Setting up POM XML
+
+We are now going to configure the POM XML file on your Maven project. These steps are also outlined on Sonatype documentation, here is the [link](https://central.sonatype.org/publish/publish-maven/#nexus-staging-maven-plugin-for-deployment-and-release)
+
+#### First add the distribution management and nexus repo plugin for your project.
 
 ```
-<plugin>
-<groupId>org.apache.maven.plugins</groupId>
-<artifactId>maven-source-plugin</artifactId>
-<version>3.0.1</version>
-<executions>
-<execution>
-<id>attach-sources</id>
-<goals>
-<goal>jar</goal>
-</goals>
-</execution>
-</executions>
-</plugin>
-```
-
-```
-<plugin>
-<groupId>org.apache.maven.plugins</groupId>
-<artifactId>maven-source-plugin</artifactId>
-<version>2.10.4</version>
-<configuration>
-<encoding>UTF-8</encoding>
-</configuration>
-<execuations>
-<execution>
-<id>attach-javadoc</id>
-<goals>
-<execution>  
-</executions>
-</plugin>
-```
-
-### Step 6: Configure to sign artifacts while releasing.
-
-```
-<profiles>
-<!-- GPG Signature on release -->
-<profile>
-<id>release-sign-artifacts</id>
-<activation>
-<property>
-<name>performRelease</name>
-<value>true</value>
-</property>
-</activation>
+<distributionManagement>
+  <snapshotRepository>
+    <id>ossrh</id>
+    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+  </snapshotRepository>
+  <repository>
+    <id>ossrh</id>
+    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  </repository>
+</distributionManagement>
 <build>
-<plugins>
-<plugin>
-<groupId>org.apache.maven.plugins</groupId>
-<artifactId>maven-gpg-plugin</artifactId>
-<version>1.6</version>
-<executions>
-<execution>
-<id>sign-artifacts</id>
-<phase>verify</phase>
-<goals>
-<goal>sign</goal>
-</goals>
-</execution>
-</executions>
-</plugin>
-</plugins>
+  <plugins>
+    <plugin>
+      <groupId>org.sonatype.plugins</groupId>
+      <artifactId>nexus-staging-maven-plugin</artifactId>
+      <version>1.6.7</version>
+      <extensions>true</extensions>
+      <configuration>
+        <serverId>ossrh</serverId>
+        <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+      </configuration>
+    </plugin>
+    ...
+  </plugins>
 </build>
-</profile>
-</profiles>
 ```
 
-### Step 7: Publish the GPG key pair and distribute your key to GPG servers:
-Please find help [here](https://central.sonatype.org/publish/requirements/gpg/)
+Add source, javadoc and gpg artifact signing plugins.
 
 ```
-gpg --keyserver keyserver.ubuntu.com --send-keys 2B18641C2C8FAEC3FFBD7597A40A580D3962BCB8
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-source-plugin</artifactId>
+    <version>2.2.1</version>
+    <executions>
+        <execution>
+            <id>attach-sources</id>
+            <goals>
+                <goal>jar-no-fork</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-javadoc-plugin</artifactId>
+    <version>2.9.1</version>
+    <executions>
+        <execution>
+            <id>attach-javadocs</id>
+            <goals>
+                <goal>jar</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-gpg-plugin</artifactId>
+    <version>3.0.1</version>
+    <executions>
+        <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+                <goal>sign</goal>
+            </goals>
+            <configuration>
+                <keyname>${gpg.keyname}</keyname>
+                <passphraseServerId>${gpg.passphrase}</passphraseServerId>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
 ```
 
-### Step 8: Do the release!
+Then add the SCM details
 
 ```
-mvn clean
-mvn release:prepare
-mvn release:perform
-```
-### Step 9: Push the tag and code to your remote repo.
-
-```
-git push–tags
-git push origin master
+<scm>
+	<connection>scm:git:https://github.com/Shadkona-OSS/spring-svc-layer-util.git</connection>
+	<url>https://github.com/Shadkona-OSS/spring-svc-layer-util</url>
+	<developerConnection>scm:git:https://github.com/Shadkona-OSS/spring-svc-layer-util</developerConnection>
+	<tag>HEAD</tag>
+</scm>
 ```
 
-### Step 10: Verify the sonatype repository.
+At last, do not forget to add additional metadata for the project.
 
 ```
+<description>
+    Need a Maven Plugin to find out the number of Methods in the J2EE Spring Service Layer not having Security Annotations in the source code
+	</description>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://github.com/kgsnipes/unum/blob/main/LICENSE</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>P C Varma</name>
+			<email>pcvarma@gmail.com</email>
+			<roles>
+				<role>owner</role>
+			</roles>
+		</developer>
+	</developers>
+```
+You are now done with the POM XML. Let's now move to the final step.
+
+
+### Deploying the artifact
+
+This step is the easiest one.
+There are basically two versions of your artifacts - a staged version and a release version.
+To deploy to the staged version use the below Maven goal.
 
 ```
+mvn nexus-staging:release
+```
 
-### Step 11: Update the Sonatype Jira ticket.
+To rollback the current staging release
+
+```
+mvn nexus-staging:drop
+```
+
+To release the current state of the code
+
+```
+mvn clean deploy
+```
+
+That's It! This ends the process.
+
+If everything goes well, your artifact should be listed in a matter of an hour in the Sonatype repository - https://search.maven.org/. It might take up-to 4-8 hours to reflect in other maven repositories.
+
+I know! It's a long process. For now, there is no easier way around. I wish there was an easier way to do this. If anybody has found a better way, please feel free to share your inputs in the comments section.
 
 
-## How to configure the got Credentials at the command prompt
+### How to configure the git Credentials at the command prompt
 1. Go to the Project root directory
 2. Run the Git pull
 
@@ -353,9 +389,17 @@ git push origin master
 git pull https://<User name>:<DEV API Key>@github.com/Shadkona-OSS/spring-svc-layer-util.git    
 ```
 
-## Release commands
+#### Release commands
 
 ```
 mvn release:clean
 mvn release:prepare
 ```
+
+#### Push the tag and code to your remote repo.
+
+```
+git push–tags
+git push origin master
+```
+
