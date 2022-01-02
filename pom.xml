@@ -5,7 +5,7 @@
 
 	<groupId>com.shadkona.oss.ci</groupId>
 	<artifactId>spring-svc-layer-util</artifactId>
-	<version>1.4.5</version>
+	<version>1.4.6-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>spring-svc-layer-util Maven Plugin</name>
