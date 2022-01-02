@@ -35,7 +35,7 @@
 		<connection>scm:git:git://github.com/Shadkona-OSS/spring-svc-layer-util.git</connection>
 		<developerConnection>scm:git:git@github.com:Shadkona-OSS/spring-svc-layer-util.git</developerConnection>
 		<url>https://github.com/Shadkona-OSS/spring-svc-layer-util</url>
-		<tag>spring-svc-layer-util-1.2.0</tag>
+		<tag>spring-svc-layer-util-1.3.0</tag>
 	</scm>
 
 	<dependencies>
