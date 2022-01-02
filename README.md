@@ -352,3 +352,10 @@ git push origin master
 ```
 git pull https://<User name>:<DEV API Key>@github.com/Shadkona-OSS/spring-svc-layer-util.git    
 ```
+
+## Release commands
+
+```
+mvn release:clean
+mvn release:prepare
+```
