@@ -374,6 +374,19 @@ To release the current state of the code
 mvn clean deploy
 ```
 
+You should see the foloowing out out for the above command
+
+```
+[INFO]  * Bulk deploy of locally gathered snapshot artifacts finished.
+[INFO] Remote deploy finished with success.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:50 min
+[INFO] Finished at: 2022-01-02T23:18:43+05:30
+[INFO] ------------------------------------------------------------------------
+```
+
 That's It! This ends the process.
 
 If everything goes well, your artifact should be listed in a matter of an hour in the Sonatype repository - https://search.maven.org/. It might take up-to 4-8 hours to reflect in other maven repositories.
@@ -381,25 +394,4 @@ If everything goes well, your artifact should be listed in a matter of an hour i
 I know! It's a long process. For now, there is no easier way around. I wish there was an easier way to do this. If anybody has found a better way, please feel free to share your inputs in the comments section.
 
 
-### How to configure the git Credentials at the command prompt
-1. Go to the Project root directory
-2. Run the Git pull
-
-```
-git pull https://<User name>:<DEV API Key>@github.com/Shadkona-OSS/spring-svc-layer-util.git    
-```
-
-#### Release commands
-
-```
-mvn release:clean
-mvn release:prepare
-```
-
-#### Push the tag and code to your remote repo.
-
-```
-git push–tags
-git push origin master
-```
 

@@ -4,11 +4,26 @@ File name : ~/.m2/settings.xml
 Content
 
 ```
-	<servers>
-		<server>
-			<id>shadkona-oss-ci</id>
-			<username>devops</username>
-			<password>1_QDevOps12345</password>
-		</server>
-	</servers>
+<settings>
+        <profiles>
+                <profile>
+                        <id>ossrh</id>
+                        <activation>
+                                <activeByDefault>true</activeByDefault>
+                        </activation>
+                        <properties>
+                                <gpg.keyname>839C4A82B068E031570C5452559FE948461241F8</gpg.keyname>
+                                <gpg.passphrase>Shadkona-OSS</gpg.passphrase>
+                        </properties>
+                </profile>
+        </profiles>
+
+        <servers>
+                <server>
+                        <id>ossrh</id>
+                        <username>devops-shadkona</username>
+                        <password>1_Qossrepo4plugin</password>
+                </server>
+        </servers>
+</settings>
 ```
