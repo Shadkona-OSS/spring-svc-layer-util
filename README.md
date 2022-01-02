@@ -53,7 +53,6 @@ C:\Users\Nadeem>
 You will need to raise a ticket on Sonatype JIRA for new Project hosting. You will first need to sign up [here](https://issues.sonatype.org/secure/Signup!default.jspa)
 
 Please create a JIRA ID with the following Details
-https://issues.sonatype.org/browse/OSSRH-75706
 
 ```
 Subject : Need a Maven Plugin to find out the number of Methods in the J2EE Spring Service Layer not having Security Annotations in the source code
