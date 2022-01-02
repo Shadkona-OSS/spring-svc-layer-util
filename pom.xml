@@ -27,7 +27,7 @@
 	<distributionManagement>
 		<repository>
 			<id>nexus-releases</id>
-			<url>https://nexus.gramsevak.net/nexus/content/repositories/releases</url>
+			<url>https://nexus.gramsevak.net/repository/shadkona-gramsevak-ci/</url>
 		</repository>
 	</distributionManagement>
 
@@ -269,7 +269,7 @@
 						</executions>
 						<configuration>
 							<serverId>nexus-releases</serverId>
-							<nexusUrl>https://nexus.gramsevak.net/nexus/</nexusUrl>
+							<nexusUrl>https://nexus.gramsevak.net/repository/shadkona-gramsevak-ci/</nexusUrl>
 							<skipStaging>true</skipStaging>
 						</configuration>
 					</plugin>
