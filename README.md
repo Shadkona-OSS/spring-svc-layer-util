@@ -343,3 +343,12 @@ git push origin master
 ```
 
 ### Step 11: Update the Sonatype Jira ticket.
+
+
+## How to configure the got Credentials at the command prompt
+1. Go to the Project root directory
+2. Run the Git pull
+
+```
+git pull https://<User name>:<DEV API Key>@github.com/Shadkona-OSS/spring-svc-layer-util.git    
+```
