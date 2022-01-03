@@ -358,36 +358,17 @@ There are basically two versions of your artifacts - a staged version and a rele
 To deploy to the staged version use the below Maven goal.
 
 
-To prepare the release
+To release the artifact to Maven Central Repo
 
 ```
 mvn release:prepare
-```
-
-To release the current state of the code
-
-```
+mvn versions:set -DnewVersion=1.4.9
 mvn clean deploy
-```
-
-You should see the foloowing out out for the above command
-
-```
-[INFO]  * Bulk deploy of locally gathered snapshot artifacts finished.
-[INFO] Remote deploy finished with success.
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  01:50 min
-[INFO] Finished at: 2022-01-02T23:18:43+05:30
-[INFO] ------------------------------------------------------------------------
-```
-
-To release the current state of the code
-
-```
+mvn versions:set -DnewVersion=1.5.0
 mvn release:clean
+then commit the git for following development
 ```
+Then check the Artifacts after 4 to 12 hrs at [Maven Cental](https://s01.oss.sonatype.org/content/repositories/snapshots/com/shadkona/oss/ci/spring-svc-layer-util/)
 
 
 That's It! This ends the process.
