@@ -87,8 +87,9 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 					Annotation ann1 = method.getAnnotation(PreAuthorize.class);
 					Annotation ann2 = method.getAnnotation(ignoreAnnotationClazz);
 					if (ann1 == null && ann2 == null) {
-						errorList.add("No PreAuthorize Annotation Found for " + clazz.getCanonicalName() + "."
-								+ method.getName());
+						errorList
+								.add("No org.springframework.security.access.prepost.PreAuthorize Annotation Found for "
+										+ clazz.getCanonicalName() + "." + method.getName());
 					}
 				}
 				for (String error : errorList) {
