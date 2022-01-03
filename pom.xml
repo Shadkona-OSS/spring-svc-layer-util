@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.shadkona.oss.ci</groupId>
 	<artifactId>spring-svc-layer-util</artifactId>
-	<version>1.4.9-SNAPSHOT</version>
+	<version>1.4.9</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>spring-svc-layer-util Maven Plugin</name>
@@ -41,7 +39,7 @@
 		<connection>scm:git:https://github.com/Shadkona-OSS/spring-svc-layer-util.git</connection>
 		<url>https://github.com/Shadkona-OSS/spring-svc-layer-util</url>
 		<developerConnection>scm:git:https://github.com/Shadkona-OSS/spring-svc-layer-util</developerConnection>
-		<tag>spring-svc-layer-util-1.4.5</tag>
+		<tag>spring-svc-layer-util-1.4.9</tag>
 	</scm>
 
 	<build>
