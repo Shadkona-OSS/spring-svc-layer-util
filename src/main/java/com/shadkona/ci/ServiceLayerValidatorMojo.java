@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -53,12 +52,6 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 
 	@SuppressWarnings("unchecked")
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		List<Dependency> dependencies = project.getDependencies();
-
-		long numDependencies = dependencies.size();
-
-		getLog().info("Number of dependencies: " + numDependencies);
-
 		try {
 			Reflections reflections = new Reflections(pkg);
 			Set<Class<?>> allSet = reflections.getTypesAnnotatedWith(org.springframework.stereotype.Service.class,
@@ -79,16 +72,16 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 			for (Class<?> clazz : allSet) {
 				if (ignoreClazzMap.get(clazz) != null) {
 					if (getLog().isDebugEnabled()) {
-						getLog().debug(new StringBuffer("Ignoring clazz " + clazz.getCanonicalName()));
+						getLog().debug(new StringBuffer("Ignoring a clazz " + clazz.getCanonicalName()));
 					}
 					continue;
 				}
 				if (getLog().isDebugEnabled()) {
-					getLog().debug(new StringBuffer("Scanning clazz " + clazz.getCanonicalName()));
+					getLog().debug(new StringBuffer("Scanning a clazz " + clazz.getCanonicalName()));
 				}
 				Method[] methodArr = clazz.getDeclaredMethods();
 				if (methodArr.length == 0) {
-					errorList.add("No Methods Found for " + clazz.getCanonicalName());
+					errorList.add("No Methods Found for clazz " + clazz.getCanonicalName());
 				}
 				for (Method method : methodArr) {
 					Annotation ann1 = method.getAnnotation(PreAuthorize.class);
@@ -103,13 +96,12 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 				}
 			}
 			if (!errorList.isEmpty()) {
-				new MojoExecutionException(errorList.size() + " Errors in the Service Impl");
+				new MojoExecutionException("Found " + errorList.size() + " Errors in the Service Impl");
 			}
 		} catch (Exception e) {
 			getLog().error(e.getMessage(), e);
 			new MojoExecutionException(e.getMessage(), e);
 		}
-
 	}
 
 }
