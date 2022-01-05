@@ -24,7 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * Ignore the list of classes given
  *
  */
-@Mojo(name = "svc-layer-validate", defaultPhase = LifecyclePhase.COMPILE)
+@Mojo(name = "svc-layer-validate", defaultPhase = LifecyclePhase.DEPLOY)
 public class ServiceLayerValidatorMojo extends AbstractMojo {
 	/**
 	 * Ignore the list of classes given
@@ -57,11 +57,17 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 				new MojoExecutionException("Package name can't be null for the project : " + project.getName());
 			}
 
+			if (getLog().isDebugEnabled()) {
+				getLog().debug(new StringBuffer("Using Package " + pkg));
+			}
+
 			Reflections reflections = new Reflections(pkg);
 			Set<Class<?>> allSet = reflections.getTypesAnnotatedWith(org.springframework.stereotype.Service.class,
 					true);
 			if (allSet.isEmpty()) {
-				getLog().info("No Service Impl classes Found");
+				if (getLog().isDebugEnabled()) {
+					getLog().debug("No Service Impl classes Found");
+				}
 				return;
 			}
 
