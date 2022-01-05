@@ -1,9 +1,13 @@
 package com.shadkona.ci;
 
+import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,42 +61,74 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 				new MojoExecutionException("Package name can't be null for the project : " + project.getName());
 			}
 
-			if (getLog().isDebugEnabled()) {
-				getLog().debug(new StringBuffer("Using Package " + pkg));
+			if (getLog().isInfoEnabled()) {
+				getLog().info(new StringBuffer("Using Package " + pkg));
 			}
+
+			Set<URL> urls = new HashSet<>();
+			List<String> testElements = project.getTestClasspathElements();
+			for (String element : testElements) {
+				urls.add(new File(element).toURI().toURL());
+			}
+			List<String> runtimeElements = project.getRuntimeClasspathElements();
+			for (String element : runtimeElements) {
+				urls.add(new File(element).toURI().toURL());
+			}
+			List<String> compiletimeElements = project.getRuntimeClasspathElements();
+			for (String element : compiletimeElements) {
+				urls.add(new File(element).toURI().toURL());
+			}
+			List<String> systemtimeElements = project.getRuntimeClasspathElements();
+			for (String element : systemtimeElements) {
+				urls.add(new File(element).toURI().toURL());
+			}
+
+			if (getLog().isInfoEnabled()) {
+				getLog().info("Classpath Found " + urls.size() + " Classses");
+			}
+			for (URL url : urls) {
+				getLog().info("URL file " + url.getFile());
+			}
+
+			ClassLoader contextClassLoader = URLClassLoader.newInstance(urls.toArray(new URL[0]),
+					Thread.currentThread().getContextClassLoader());
+
+			Thread.currentThread().setContextClassLoader(contextClassLoader);
 
 			Reflections reflections = new Reflections(pkg);
 			Set<Class<?>> allSet = reflections.getTypesAnnotatedWith(org.springframework.stereotype.Service.class,
 					true);
 			if (allSet.isEmpty()) {
-				if (getLog().isDebugEnabled()) {
-					getLog().debug("No Service Impl classes Found");
+				if (getLog().isInfoEnabled()) {
+					getLog().info("No Service Impl classes Found");
 				}
 				return;
-			}
-
-			Map<Class<?>, String> ignoreClazzMap = new HashMap<Class<?>, String>();
-			if (ignoreClassList != null && ignoreClassList.length > 0) {
-				for (int idx = 0; idx < ignoreClassList.length; idx++) {
-					ignoreClazzMap.put(Class.forName(ignoreClassList[idx]), "");
+			} else {
+				if (getLog().isInfoEnabled()) {
+					getLog().info("Relection Found " + allSet.size() + " Classses");
+					for (Class<?> clazz : allSet) {
+						getLog().info("Relection found a class " + clazz);
+					}
 				}
 			}
 
-			Class<Annotation> ignoreAnnotationClazz = null;
-			if (ignoreAnnotation != null && ignoreAnnotation.trim().length() > 0) {
-				ignoreAnnotationClazz = (Class<Annotation>) Class.forName(ignoreAnnotation);
+			Map<String, String> ignoreClazzMap = new HashMap<>();
+			if (ignoreClassList != null && ignoreClassList.length > 0) {
+				for (int idx = 0; idx < ignoreClassList.length; idx++) {
+					ignoreClazzMap.put(ignoreClassList[idx], "");
+				}
 			}
 
 			List<String> errorList = new ArrayList<>();
 			for (Class<?> clazz : allSet) {
-				if (ignoreClazzMap.get(clazz) != null) {
-					if (getLog().isDebugEnabled()) {
-						getLog().debug(new StringBuffer("Ignoring a clazz " + clazz.getCanonicalName()));
+				if (ignoreClazzMap.get(clazz.getCanonicalName()) != null) {
+					if (getLog().isInfoEnabled()) {
+						getLog().info(new StringBuffer("Ignoring a clazz " + clazz.getCanonicalName()));
 					}
 					continue;
 				}
-				if (getLog().isDebugEnabled()) {
-					getLog().debug(new StringBuffer("Scanning a clazz " + clazz.getCanonicalName()));
+				if (getLog().isInfoEnabled()) {
+					getLog().info(new StringBuffer("Scanning a clazz " + clazz.getCanonicalName()));
 				}
 				Method[] methodArr = clazz.getDeclaredMethods();
 				if (methodArr.length == 0) {
@@ -101,8 +137,14 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 				for (Method method : methodArr) {
 					Annotation ann1 = method.getAnnotation(PreAuthorize.class);
 					Annotation ann2 = null;
-					if (ignoreAnnotationClazz == null) {
-						ann2 = method.getAnnotation(ignoreAnnotationClazz);
+					if (ignoreAnnotation == null) {
+						Annotation[] annArr = method.getAnnotations();
+						for (Annotation ann : annArr) {
+							if (ann.getClass().getCanonicalName().equals(ignoreAnnotation)) {
+								ann2 = ann;
+								break;
+							}
+						}
 					}
 					if (ann1 == null && ann2 == null) {
 						errorList
