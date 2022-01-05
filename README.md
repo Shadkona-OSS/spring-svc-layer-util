@@ -378,4 +378,9 @@ If everything goes well, your artifact should be listed in a matter of an hour i
 I know! It's a long process. For now, there is no easier way around. I wish there was an easier way to do this. If anybody has found a better way, please feel free to share your inputs in the comments section.
 
 
+## How to run this plugin used in other projects
+
+```
+mvn com.shadkona.oss.ci:spring-svc-layer-util:1.4.7-SNAPSHOT:svc-layer-validate
+```
 
