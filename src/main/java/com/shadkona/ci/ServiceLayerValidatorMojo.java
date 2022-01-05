@@ -53,6 +53,10 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 	@SuppressWarnings("unchecked")
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
+			if (pkg == null || pkg.trim().length() <= 0) {
+				new MojoExecutionException("Package name can't be null for the project : " + project.getName());
+			}
+
 			Reflections reflections = new Reflections(pkg);
 			Set<Class<?>> allSet = reflections.getTypesAnnotatedWith(org.springframework.stereotype.Service.class,
 					true);
@@ -62,11 +66,16 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 			}
 
 			Map<Class<?>, String> ignoreClazzMap = new HashMap<Class<?>, String>();
-			for (int idx = 0; idx < ignoreClassList.length; idx++) {
-				ignoreClazzMap.put(Class.forName(ignoreClassList[idx]), "");
+			if (ignoreClassList != null && ignoreClassList.length > 0) {
+				for (int idx = 0; idx < ignoreClassList.length; idx++) {
+					ignoreClazzMap.put(Class.forName(ignoreClassList[idx]), "");
+				}
 			}
 
-			Class<Annotation> ignoreAnnotationClazz = (Class<Annotation>) Class.forName(ignoreAnnotation);
+			Class<Annotation> ignoreAnnotationClazz = null;
+			if (ignoreAnnotation != null && ignoreAnnotation.trim().length() > 0) {
+				ignoreAnnotationClazz = (Class<Annotation>) Class.forName(ignoreAnnotation);
+			}
 
 			List<String> errorList = new ArrayList<>();
 			for (Class<?> clazz : allSet) {
@@ -85,7 +94,10 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 				}
 				for (Method method : methodArr) {
 					Annotation ann1 = method.getAnnotation(PreAuthorize.class);
-					Annotation ann2 = method.getAnnotation(ignoreAnnotationClazz);
+					Annotation ann2 = null;
+					if (ignoreAnnotationClazz == null) {
+						ann2 = method.getAnnotation(ignoreAnnotationClazz);
+					}
 					if (ann1 == null && ann2 == null) {
 						errorList
 								.add("No org.springframework.security.access.prepost.PreAuthorize Annotation Found for "
