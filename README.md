@@ -361,12 +361,12 @@ To deploy to the staged version use the below Maven goal.
 To release the artifact to Maven Central Repo
 
 ```
-mvn release:prepare
-mvn versions:set -DnewVersion=1.4.9
+Makesure the functionality and commit all the code changes with a Release version
 mvn clean deploy
-mvn versions:set -DnewVersion=1.5.0
+Create a Tag in the Git with a Release version
 mvn release:clean
-then commit the git for following development
+mvn versions:set -DnewVersion=<New Development Version>
+Then commit the git for New Development Version
 ```
 Then check the Artifacts after 4 to 12 hrs at [Maven Cental](https://s01.oss.sonatype.org/content/repositories/snapshots/com/shadkona/oss/ci/spring-svc-layer-util/)
 
