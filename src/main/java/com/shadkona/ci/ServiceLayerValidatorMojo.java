@@ -12,38 +12,45 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.reflections.Reflections;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
- * Checks the number of methods not having Security Annotations
- * 
- * Ignore the list of classes given
+ * Checks the number of methods not having Security Annotations. Scan the classes
+ * from the Package name from the configuration parameter named pkg. Ignore the
+ * list of classes from the configuration parameter named ignoreClassList. Ignore
+ * the list of classes/methods having the annotation from the configuration
+ * parameter named ignoreAnnotation
  *
  */
-@Mojo(name = "svc-layer-validate", defaultPhase = LifecyclePhase.DEPLOY)
+@Mojo(name = "svc-layer-validate", defaultPhase = LifecyclePhase.COMPILE, requiresDependencyResolution = ResolutionScope.TEST)
 public class ServiceLayerValidatorMojo extends AbstractMojo {
 	/**
-	 * Ignore the list of classes given
+	 * Ignore the list of classes from the configuration parameter named
+	 * ignoreClassList
 	 */
 	@Parameter(property = "ignoreClassList")
 	String[] ignoreClassList;
 
 	/**
-	 * Ignore the list of classes given
+	 * Ignore the list of classes/methods having the annotation from the
+	 * configuration parameter named ignoreAnnotation
 	 */
 	@Parameter(property = "ignoreAnnotation")
 	String ignoreAnnotation;
 
 	/**
-	 * Package to scan for the Implementation classes
+	 * Scan the classes from the Package name from the configuration parameter named
+	 * pkg
 	 */
 	@Parameter(property = "pkg")
 	String pkg;
@@ -54,7 +61,9 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project}", required = true, readonly = true)
 	MavenProject project;
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * Checks the number of methods not having Security Annotations
+	 */
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
 			if (pkg == null || pkg.trim().length() <= 0) {
@@ -65,6 +74,7 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 				getLog().info(new StringBuffer("Using Package " + pkg));
 			}
 
+			// Load the Class File information
 			Set<URL> urls = new HashSet<>();
 			List<String> testElements = project.getTestClasspathElements();
 			for (String element : testElements) {
@@ -82,6 +92,10 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 			for (String element : systemtimeElements) {
 				urls.add(new File(element).toURI().toURL());
 			}
+			Set<Artifact> artifactSet = project.getArtifacts();
+			for (Artifact artft : artifactSet) {
+				urls.add(artft.getFile().toURI().toURL());
+			}
 
 			if (getLog().isInfoEnabled()) {
 				getLog().info("Classpath Found " + urls.size() + " Classses");
@@ -90,11 +104,13 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 				getLog().info("URL file " + url.getFile());
 			}
 
+			// Load the Classpath
 			ClassLoader contextClassLoader = URLClassLoader.newInstance(urls.toArray(new URL[0]),
 					Thread.currentThread().getContextClassLoader());
 
 			Thread.currentThread().setContextClassLoader(contextClassLoader);
 
+			// Load the Classes from the given Package name
 			Reflections reflections = new Reflections(pkg);
 			Set<Class<?>> allSet = reflections.getTypesAnnotatedWith(org.springframework.stereotype.Service.class,
 					true);
@@ -112,6 +128,7 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 				}
 			}
 
+			// Load the ignoreClass List
 			Map<String, String> ignoreClazzMap = new HashMap<>();
 			if (ignoreClassList != null && ignoreClassList.length > 0) {
 				for (int idx = 0; idx < ignoreClassList.length; idx++) {
@@ -119,6 +136,7 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 				}
 			}
 
+			// Identify the Classes not having PreAuthorize annotation
 			List<String> errorList = new ArrayList<>();
 			for (Class<?> clazz : allSet) {
 				if (ignoreClazzMap.get(clazz.getCanonicalName()) != null) {
@@ -147,14 +165,17 @@ public class ServiceLayerValidatorMojo extends AbstractMojo {
 						}
 					}
 					if (ann1 == null && ann2 == null) {
-						errorList
-								.add("No org.springframework.security.access.prepost.PreAuthorize Annotation Found for "
-										+ clazz.getCanonicalName() + "." + method.getName());
+						errorList.add("Annotation missing for " + clazz.getCanonicalName() + "." + method.getName());
 					}
 				}
-				for (String error : errorList) {
-					getLog().error(error);
-				}
+			}
+			if (getLog().isInfoEnabled()) {
+				getLog().info(new StringBuffer("Found " + errorList.size() + " classes without Security Annotation"));
+			}
+			
+			// Print Error List
+			for (String error : errorList) {
+				getLog().error(error);
 			}
 			if (!errorList.isEmpty()) {
 				new MojoExecutionException("Found " + errorList.size() + " Errors in the Service Impl");
